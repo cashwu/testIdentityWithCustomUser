@@ -25,6 +25,8 @@ namespace testIdentity.Models
         public DbSet<PersistedGrant> PersistedGrants { get; set; }
 
         public DbSet<DeviceFlowCodes> DeviceFlowCodes { get; set; }
+        
+        public DbSet<User> User { get; set; }
 
         public Task<int> SaveChangesAsync()
         {

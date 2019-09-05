@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
@@ -9,23 +10,24 @@ namespace testIdentity.Models
 {
     public class CustomProfileService : IProfileService
     {
-        private readonly IUserRepo _userRepo;
+        private readonly AppDbContext _appDbContext;
 
-        public CustomProfileService(IUserRepo userRepo)
+        public CustomProfileService(AppDbContext appDbContext)
         {
-            _userRepo = userRepo;
+            _appDbContext = appDbContext;
         }
 
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             var subId = context.Subject.GetSubjectId();
 
-            var user = _userRepo.FindById(subId);
+            var user = FindById(subId);
 
             var claims = new List<Claim>
             {
                 new Claim("SystemCode", user.SystemCode),
-                new Claim("Name", user.UserName)
+                new Claim("Name", user.UserName),
+                new Claim("RefId", user.RefId.ToString())
             };
 
             context.IssuedClaims = claims;
@@ -37,11 +39,16 @@ namespace testIdentity.Models
         {
             
             var subId = context.Subject.GetSubjectId();
-            var user = _userRepo.FindById(subId);
+            var user = FindById(subId);
 
             context.IsActive = user != null;
             
             await Task.CompletedTask;
+        }
+
+        private User FindById(string subId)
+        {
+            return _appDbContext.User.FirstOrDefault(a => a.Id == subId);
         }
     }
 }

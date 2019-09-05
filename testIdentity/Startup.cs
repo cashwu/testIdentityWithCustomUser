@@ -29,8 +29,6 @@ namespace testIdentity
                 options.EnableSensitiveDataLogging();
             });
 
-            services.AddScoped<IUserRepo, UserRepo>();
-
             var identityServerBuilder = services.AddIdentityServer(options =>
                 {
                     options.Events.RaiseErrorEvents = true;
