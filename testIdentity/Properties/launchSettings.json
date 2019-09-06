@@ -2,7 +2,7 @@
   "profiles": {
     "testIdentity": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "applicationUrl": "http://localhost:32354",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

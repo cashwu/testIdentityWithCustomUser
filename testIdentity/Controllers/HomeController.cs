@@ -11,11 +11,6 @@ namespace testIdentity.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         public IActionResult Password([FromQuery] string pw)
         {
             pw = Cryptography.EncryptBySHA1(pw);
