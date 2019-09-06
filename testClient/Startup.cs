@@ -1,4 +1,5 @@
 ﻿using System;
+using Cashwu.AspNetCore.Configuration;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Logging;
+using testClient.Infra;
 
 namespace testClient
 {
@@ -33,6 +35,10 @@ namespace testClient
                     options.ApiName = "Api";
                     options.JwtValidationClockSkew = TimeSpan.FromMinutes(1);
                 });
+            
+            services.AddSingleton<IRedisClient, RedisClient>();
+            
+            services.AddConfig(Configuration, typeof(RedisConfig).Assembly.GetName().Name);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

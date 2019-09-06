@@ -1,23 +1,25 @@
 ﻿using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using testClient.Infra;
+using testClient.Models;
 
 namespace testClient.Controllers
 {
     public class HomeController : Controller
     {
+        private const string UserName = "cash";
+        private const string SystemCode = "AB001";
+        private readonly IRedisClient _redisClient;
         private static readonly HttpClient Client = new HttpClient();
-        private ClaimsPrincipal _httpContextUser;
 
-        public HomeController(IHttpContextAccessor httpContextAccessor)
+        public HomeController(IRedisClient redisClient)
         {
-            _httpContextUser = httpContextAccessor.HttpContext.User;
+            _redisClient = redisClient;
         }
 
         public IActionResult Index()
@@ -27,7 +29,8 @@ namespace testClient.Controllers
 
         public async Task<IActionResult> Auth()
         {
-            Client.DefaultRequestHeaders.Add("SystemCode", "AB001");
+            Client.DefaultRequestHeaders.Clear();
+            Client.DefaultRequestHeaders.Add("SystemCode", SystemCode);
             var result = await Client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
                 Address = "http://localhost:32354/connect/token",
@@ -38,7 +41,19 @@ namespace testClient.Controllers
                 Scope = "Api offline_access"
             }, CancellationToken.None);
 
+            if (result.IsError == false && !string.IsNullOrEmpty(result.AccessToken))
+            {
+                _redisClient.Set($"{SystemCode}-{UserName}", new JwtToken(result.AccessToken, result.RefreshToken));
+            }
+
             return Ok(result.Json);
+        }
+
+        public IActionResult GetToken()
+        {
+            var jwtToken = _redisClient.Get<JwtToken>($"{SystemCode}-{UserName}");
+
+            return Ok(jwtToken);
         }
 
         [Authorize]
@@ -50,11 +65,6 @@ namespace testClient.Controllers
                 SystemCode = UserClaims("SystemCode"),
                 RefId = UserClaims("RefId")
             });
-        }
-
-        private string UserClaims()
-        {
-            return User.Claims.FirstOrDefault(a => a.Type == "SystemCode")?.Value;
         }
 
         private string UserClaims(string claim)
