@@ -63,4 +63,12 @@
       <_ContentIncludedByDefault Remove="wwwroot\favicon.ico" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <None Remove="oauth.rsa" />
+      <Content Include="oauth.rsa">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
