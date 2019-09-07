@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System.Security.Claims;
 using System.Security.Principal;
-using IdentityServer4.Extensions;
+using Microsoft.AspNet.Identity;
 
 namespace testMvc.Extension
 {
@@ -8,7 +8,8 @@ namespace testMvc.Extension
     {
         public static string UserClaims(this IPrincipal user, string claim)
         {
-            return user.GetAuthenticationMethods().FirstOrDefault(a => a.Type == claim)?.Value;
+            var claimsIdentity = user.Identity as ClaimsIdentity;
+            return claimsIdentity.FindFirstValue(claim);
         }
     }
 }

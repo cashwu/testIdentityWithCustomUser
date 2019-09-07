@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using IdentityModel.Client;
+using testMvc.ActionFilter;
 using testMvc.Extension;
+using testMvc.Models;
 
 namespace testMvc.Controllers
 {
@@ -60,13 +60,12 @@ namespace testMvc.Controllers
             return Json(new JwtToken(result.AccessToken, result.RefreshToken));
         }
 
-//        [CustomAuthorizeActionFilter]
-        [Authorize]
+        [CustomAuthorizeActionFilter]
         public ActionResult Data()
         {
             return Json(new
             {
-                User.Identity.Name,
+                Name = User.UserClaims("Name"),
                 SystemCode = User.UserClaims("SystemCode"),
                 RefId = User.UserClaims("RefId")
             }, JsonRequestBehavior.AllowGet);
@@ -86,67 +85,5 @@ namespace testMvc.Controllers
                 }
             }
         }
-    }
-
-    public class CustomAuthorizeActionFilterAttribute : ActionFilterAttribute
-    {
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            if (!context.HttpContext.User.Identity.IsAuthenticated)
-            {
-                context.Result = new HttpUnauthorizedResult();
-                return;
-            }
-
-            var bearerString = context.HttpContext.Request.Headers.Get("Authorization");
-//            var bearerString = context.HttpContext.Request.Headers.FirstOrDefault(a => a.Key == "Authorization").Value.ToString();
-            var token = bearerString.Split(' ')[1];
-
-            var systemCode = context.HttpContext.User.UserClaims("SystemCode");
-            var userName = context.HttpContext.User.Identity.Name;
-
-            var jwtToken = Store.TokenStore[$"{systemCode}-{userName}"];
-
-            if (jwtToken == null || jwtToken.AccessToken != token)
-            {
-                context.Result = new HttpUnauthorizedResult();
-            }
-        }
-    }
-
-    public class Store
-    {
-        public static Dictionary<string, JwtToken> TokenStore = new Dictionary<string, JwtToken>();
-    }
-
-    public class JwtToken
-    {
-        public string AccessToken { get; set; }
-
-        public string RefreshToken { get; set; }
-
-        public JwtToken()
-        {
-        }
-
-        public JwtToken(string accessToken, string refreshToken)
-        {
-            AccessToken = accessToken;
-            RefreshToken = refreshToken;
-        }
-    }
-
-    public class RefreshReq
-    {
-        public string Token { get; set; }
-    }
-
-    public class AuthReq
-    {
-        public string Name { get; set; }
-
-        public string Password { get; set; }
-
-        public string SystemCode { get; set; }
     }
 }
