@@ -287,6 +287,7 @@
       <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
       <Private>True</Private>
@@ -391,6 +392,27 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="IdentityServer3.AccessTokenValidation\IdentityServerBearerTokenAuthenticationOptions.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\IdentityServerBearerTokenValidationAppBuilderExtensions.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\IdentityServerBearerTokenValidationMiddleware.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\AsyncHelper.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\Cache.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\Clock.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\ContextTokenProvider.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\DiscoveryDocumentIssuerSecurityTokenProvider.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\EpochTimeExtensions.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\ICache.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\IClock.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\IdentityServerOAuthBearerAuthenticationOptions.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\InMemoryValidationResultCache.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\IntrospectionEndpointTokenProvider.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\IValidationResultCache.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\PreserveAccessTokenMiddleware.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\ScopeRequirementMiddleware.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\ScopeRequirementOptions.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\StringExtensions.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\ValidationEndpointTokenProvider.cs" />
+    <Compile Include="IdentityServer3.AccessTokenValidation\Plumbing\ValidationMode.cs" />
     <Compile Include="Models\AuthReq.cs" />
     <Compile Include="Models\JwtToken.cs" />
     <Compile Include="Models\RefreshReq.cs" />

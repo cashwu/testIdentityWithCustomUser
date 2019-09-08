@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -31,6 +31,18 @@ namespace testMvc
                     IssuerSigningKeys = openIdConfig.SigningKeys,
                 },
             });
+
+//            app.UseIdentityServerBearerTokenAuthentication(new IdentityServerBearerTokenAuthenticationOptions
+//            {
+//                AuthenticationType = "Bearer",
+//                Authority = "http://localhost:32354",
+//                ClientId = "api",
+//                ClientSecret = "6CD30DB681204AFA85CEFF8F157FE28E",
+//                ValidationMode =  ValidationMode.ValidationEndpoint,
+////                RequireHttpsMetadata = false,
+////                ApiName = "Api",
+////                JwtValidationClockSkew = TimeSpan.FromMinutes(1)r
+//            });
         }
 
         private static OpenIdConnectConfiguration OpenIdConfig()

@@ -36,7 +36,8 @@ namespace testClient
                     options.JwtValidationClockSkew = TimeSpan.FromMinutes(1);
                 });
             
-            services.AddSingleton<IRedisClient, RedisClient>();
+//            services.AddSingleton<IRedisClient, RedisClient>();
+            services.AddSingleton<IRedisClient, MemoryClient>();
             
             services.AddConfig(Configuration, typeof(RedisConfig).Assembly.GetName().Name);
         }

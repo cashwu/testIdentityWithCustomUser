@@ -68,14 +68,6 @@ namespace testClient.Controllers
             return Ok(result.Json);
         }
 
-//        [HttpGet]
-//        public IActionResult GetToken()
-//        {
-//            var jwtToken = _redisClient.Get<JwtToken>($"{SystemCode}-{UserName}");
-//
-//            return Ok(jwtToken);
-//        }
-
         [CustomAuthorizeActionFilter]
         public IActionResult Data()
         {
