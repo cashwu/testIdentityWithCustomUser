@@ -1,14 +1,11 @@
-﻿using System.Data;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Web.Hosting;
+using System.Threading;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Jwt;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Owin;
 
 [assembly: OwinStartup(typeof(testMvc.Startup))]
@@ -19,6 +16,9 @@ namespace testMvc
     {
         public void Configuration(IAppBuilder app)
         {
+            IdentityModelEventSource.ShowPII = true;
+
+            var openIdConfig = OpenIdConfig();
             app.UseJwtBearerAuthentication(new JwtBearerAuthenticationOptions
             {
                 AuthenticationMode = AuthenticationMode.Active,
@@ -28,36 +28,24 @@ namespace testMvc
                 {
                     ValidAudiences = new[] {"Api"},
                     ValidIssuer = "oauth",
-                    IssuerSigningKey = RsaSecurityKey(),
-                }
+                    IssuerSigningKeys = openIdConfig.SigningKeys,
+                },
             });
         }
 
-        private static RsaSecurityKey RsaSecurityKey()
+        private static OpenIdConnectConfiguration OpenIdConfig()
         {
-            var key = JsonConvert.DeserializeObject<TemporaryRsaKey>(
-                File.ReadAllText(HostingEnvironment.MapPath(@"~/App_Data/oauth.rsa") ?? throw new NoNullAllowedException()),
-                new JsonSerializerSettings {ContractResolver = new RsaKeyContractResolver()});
+            var url = $"http://localhost:32354/.well-known/openid-configuration";
+            var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(url,
+                new OpenIdConnectConfigurationRetriever(),
+                new HttpDocumentRetriever
+                {
+                    RequireHttps = false
+                });
+            var openIdConfig = configurationManager.GetConfigurationAsync(CancellationToken.None).GetAwaiter()
+                .GetResult();
 
-            var rsaSecurityKey = new RsaSecurityKey(key.Parameters);
-            return rsaSecurityKey;
-        }
-    }
-
-    internal class TemporaryRsaKey
-    {
-        public RSAParameters Parameters { get; set; }
-    }
-
-    internal class RsaKeyContractResolver : DefaultContractResolver
-    {
-        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-        {
-            var property = base.CreateProperty(member, memberSerialization);
-
-            property.Ignored = false;
-
-            return property;
+            return openIdConfig;
         }
     }
 }
