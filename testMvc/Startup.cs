@@ -45,7 +45,7 @@ namespace testMvc
 //            });
         }
 
-        private static OpenIdConnectConfiguration OpenIdConfig()
+        private OpenIdConnectConfiguration OpenIdConfig()
         {
             var url = $"http://localhost:32354/.well-known/openid-configuration";
             var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(url,
