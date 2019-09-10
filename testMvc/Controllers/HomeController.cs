@@ -23,7 +23,7 @@ namespace testMvc.Controllers
             var result = await Client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
                 Address = "http://localhost:32354/connect/token",
-                ClientId = "api",
+                ClientId = "Api",
                 ClientSecret = "6CD30DB681204AFA85CEFF8F157FE28E",
                 UserName = req.Name,
                 Password = req.Password,
@@ -41,7 +41,7 @@ namespace testMvc.Controllers
             var result = await Client.RequestRefreshTokenAsync(new RefreshTokenRequest
             {
                 Address = "http://localhost:32354/connect/token",
-                ClientId = "api",
+                ClientId = "Api",
                 ClientSecret = "6CD30DB681204AFA85CEFF8F157FE28E",
                 RefreshToken = req.Token
             }, CancellationToken.None);
